@@ -2,7 +2,7 @@ name: Sync Fork
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # Ejecutar diariamente a medianoche
+    - cron: '0 * * * *'  # Ejecutar cada hora (minuto 0 de cada hora)
   workflow_dispatch:  # Permite ejecutar manualmente cuando quieras
 
 jobs:
@@ -21,6 +21,6 @@ jobs:
       
       - name: Sync fork
         run: |
-          git checkout main  # o master, según tu rama principal
+          git checkout main
           git merge upstream/main
           git push origin main
