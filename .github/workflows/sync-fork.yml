@@ -8,13 +8,31 @@ on:
 jobs:
   sync:
     runs-on: ubuntu-latest
-    
+    name: Sync latest upstream changes
     steps:
-      - name: Sync fork with upstream repository
-        uses: TG908/fork-sync@v1.1
+      - name: Checkout main
+        uses: actions/checkout@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          owner: gpsyrou
-          base: main
-          head: main
-          repo: tube-virality
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: main
+
+      - name: Add upstream remote
+        run: |
+          git remote add upstream https://github.com/gpsyrou/tube-virality.git
+          git remote -v
+
+      - name: Fetch upstream
+        run: |
+          git fetch upstream
+          git log --oneline --graph --decorate --all -n 10
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "actions@github.com"
+
+      - name: Merge upstream
+        run: |
+          git merge upstream/main --no-edit
+          git push origin main
