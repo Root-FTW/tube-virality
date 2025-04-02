@@ -2,25 +2,19 @@ name: Sync Fork
 
 on:
   schedule:
-    - cron: '0 * * * *'  # Ejecutar cada hora (minuto 0 de cada hora)
+    - cron: '0 * * * *'  # Ejecutar cada hora
   workflow_dispatch:  # Permite ejecutar manualmente cuando quieras
 
 jobs:
   sync:
     runs-on: ubuntu-latest
+    
     steps:
-      - uses: actions/checkout@v3
+      - name: Sync fork with upstream repository
+        uses: TG908/fork-sync@v1.1
         with:
-          fetch-depth: 0
-      
-      - name: Add remote upstream
-        run: git remote add upstream https://github.com/gpsyrou/tube-virality.git
-      
-      - name: Fetch upstream
-        run: git fetch upstream
-      
-      - name: Sync fork
-        run: |
-          git checkout main
-          git merge upstream/main
-          git push origin main
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          owner: gpsyrou
+          base: main
+          head: main
+          repo: tube-virality
